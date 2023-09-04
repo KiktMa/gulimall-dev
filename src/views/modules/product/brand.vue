@@ -1,144 +1,52 @@
 <template>
   <div class="mod-config">
-    <el-form
-      :inline="true"
-      :model="dataForm"
-      @keyup.enter.native="getDataList()"
-    >
+    <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-input
-          v-model="dataForm.key"
-          placeholder="参数名"
-          clearable
-        ></el-input>
+        <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button
-          v-if="isAuth('product:brand:save')"
-          type="primary"
-          @click="addOrUpdateHandle()"
-          >新增</el-button
-        >
-        <el-button
-          v-if="isAuth('product:brand:delete')"
-          type="danger"
-          @click="deleteHandle()"
-          :disabled="dataListSelections.length <= 0"
-          >批量删除</el-button
-        >
+        <el-button v-if="isAuth('product:brand:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="isAuth('product:brand:delete')" type="danger" @click="deleteHandle()"
+          :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
-    <el-table
-      :data="dataList"
-      border
-      v-loading="dataListLoading"
-      @selection-change="selectionChangeHandle"
-      style="width: 100%"
-    >
-      <el-table-column
-        type="selection"
-        header-align="center"
-        align="center"
-        width="50"
-      >
+    <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle"
+      style="width: 100%">
+      <el-table-column type="selection" header-align="center" align="center" width="50">
       </el-table-column>
-      <el-table-column
-        prop="brandId"
-        header-align="center"
-        align="center"
-        label="品牌id"
-      >
+      <el-table-column prop="brandId" header-align="center" align="center" label="品牌id">
       </el-table-column>
-      <el-table-column
-        prop="name"
-        header-align="center"
-        align="center"
-        label="品牌名"
-      >
+      <el-table-column prop="name" header-align="center" align="center" label="品牌名">
       </el-table-column>
-      <el-table-column
-        prop="logo"
-        header-align="center"
-        align="center"
-        label="品牌logo地址"
-      >
+      <el-table-column prop="logo" header-align="center" align="center" label="品牌logo地址">
       </el-table-column>
-      <el-table-column
-        prop="descript"
-        header-align="center"
-        align="center"
-        label="介绍"
-      >
+      <el-table-column prop="descript" header-align="center" align="center" label="介绍">
       </el-table-column>
-      <el-table-column
-        prop="showStatus"
-        header-align="center"
-        align="center"
-        label="显示状态"
-      >
+      <el-table-column prop="showStatus" header-align="center" align="center" label="显示状态">
         <template slot-scope="scope">
-          <el-switch
-            v-model="scope.row.showStatus"
-            active-color="#13ce66"
-            inactive-color="#ff4949"
-          >
+          <el-switch v-model="scope.row.showStatus" active-color="#13ce66" inactive-color="#ff4949" :active-value="1"
+            :inactive-value="0" @change="changeBrandStatus(scope.row)">
           </el-switch>
         </template>
       </el-table-column>
-      <el-table-column
-        prop="firstLetter"
-        header-align="center"
-        align="center"
-        label="检索首字母"
-      >
+      <el-table-column prop="firstLetter" header-align="center" align="center" label="检索首字母">
       </el-table-column>
-      <el-table-column
-        prop="sort"
-        header-align="center"
-        align="center"
-        label="排序"
-      >
+      <el-table-column prop="sort" header-align="center" align="center" label="排序">
       </el-table-column>
-      <el-table-column
-        fixed="right"
-        header-align="center"
-        align="center"
-        width="150"
-        label="操作"
-      >
+      <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
-          <el-button
-            type="text"
-            size="small"
-            @click="addOrUpdateHandle(scope.row.brandId)"
-            >修改</el-button
-          >
-          <el-button
-            type="text"
-            size="small"
-            @click="deleteHandle(scope.row.brandId)"
-            >删除</el-button
-          >
+          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.brandId)">修改</el-button>
+          <el-button type="text" size="small" @click="deleteHandle(scope.row.brandId)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination
-      @size-change="sizeChangeHandle"
-      @current-change="currentChangeHandle"
-      :current-page="pageIndex"
-      :page-sizes="[10, 20, 50, 100]"
-      :page-size="pageSize"
-      :total="totalPage"
-      layout="total, sizes, prev, pager, next, jumper"
-    >
+    <el-pagination @size-change="sizeChangeHandle" @current-change="currentChangeHandle" :current-page="pageIndex"
+      :page-sizes="[10, 20, 50, 100]" :page-size="pageSize" :total="totalPage"
+      layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
-    <add-or-update
-      v-if="addOrUpdateVisible"
-      ref="addOrUpdate"
-      @refreshDataList="getDataList"
-    ></add-or-update>
+    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
   </div>
 </template>
 
@@ -166,6 +74,23 @@ export default {
     this.getDataList();
   },
   methods: {
+
+    // 获取品牌状态
+    changeBrandStatus(data) {
+      console.log(data);
+      let { brandId, showStatus } = data;
+      // 发送修改状态请求
+      this.$http({
+        url: this.$http.adornUrl('/product/brand/update'),
+        method: 'post',
+        data: this.$http.adornData({ brandId, showStatus }, false)
+      }).then(({ data }) => {
+        this.$message({
+          message: "状态修改成功",
+          type: "success",
+        });
+      });
+    },
     // 获取数据列表
     getDataList() {
       this.dataListLoading = true;
@@ -215,8 +140,8 @@ export default {
       var ids = id
         ? [id]
         : this.dataListSelections.map((item) => {
-            return item.brandId;
-          });
+          return item.brandId;
+        });
       this.$confirm(
         `确定对[id=${ids.join(",")}]进行[${id ? "删除" : "批量删除"}]操作?`,
         "提示",
