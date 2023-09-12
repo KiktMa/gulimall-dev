@@ -32,8 +32,8 @@ export default {
   computed: {},
   //监控data中的数据变化
   watch: {
-    brandId(val) {
-      // this.PubSub.publish("brandId", val);
+    handler(val) {
+      this.PubSub.publish("brandId", val);
     }
   },
   //方法集合
@@ -46,7 +46,8 @@ export default {
           catId: this.catId
         })
       }).then(({ data }) => {
-        this.brands = data.data;
+        console.log(data);
+        this.brands = data;
       });
     }
   },
@@ -56,6 +57,7 @@ export default {
   mounted() {
     //监听三级分类消息的变化
     this.subscribe = PubSub.subscribe("catPath", (msg, val) => {
+      console.log(msg, val);
       this.catId = val[val.length - 1];
       this.getCatBrands();
     });

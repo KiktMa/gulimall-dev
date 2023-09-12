@@ -1,8 +1,15 @@
 <template>
   <div>
     <el-input placeholder="输入关键字进行过滤" v-model="filterText"></el-input>
-    <el-tree :data="menus" :props="defaultProps" node-key="catId" ref="menuTree" @node-click="nodeclick"
-      :filter-node-method="filterNode" :highlight-current="true"></el-tree>
+    <el-tree
+      :data="menus"
+      :props="defaultProps"
+      node-key="catId"
+      ref="menuTree"
+      @node-click="nodeclick"
+      :filter-node-method="filterNode"
+      :highlight-current = "true"
+    ></el-tree>
   </div>
 </template>
 
@@ -50,7 +57,7 @@ export default {
       });
     },
     nodeclick(data, node, component) {
-      // console.log("子组件category的节点被点击", data, node, component);
+      console.log("子组件category的节点被点击", data, node, component);
       //向父组件发送事件；
       this.$emit("tree-node-click", data, node, component);
     }
@@ -60,14 +67,14 @@ export default {
     this.getMenus();
   },
   //生命周期 - 挂载完成（可以访问DOM元素）
-  mounted() { },
-  beforeCreate() { }, //生命周期 - 创建之前
-  beforeMount() { }, //生命周期 - 挂载之前
-  beforeUpdate() { }, //生命周期 - 更新之前
-  updated() { }, //生命周期 - 更新之后
-  beforeDestroy() { }, //生命周期 - 销毁之前
-  destroyed() { }, //生命周期 - 销毁完成
-  activated() { } //如果页面有keep-alive缓存功能，这个函数会触发
+  mounted() {},
+  beforeCreate() {}, //生命周期 - 创建之前
+  beforeMount() {}, //生命周期 - 挂载之前
+  beforeUpdate() {}, //生命周期 - 更新之前
+  updated() {}, //生命周期 - 更新之后
+  beforeDestroy() {}, //生命周期 - 销毁之前
+  destroyed() {}, //生命周期 - 销毁完成
+  activated() {} //如果页面有keep-alive缓存功能，这个函数会触发
 };
 </script>
 <style scoped>
