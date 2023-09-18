@@ -1,8 +1,8 @@
 <template>
   <div>
-    <el-upload action="gulimall-sichuan.oss-cn-hangzhou.aliyuncs.com" :data="dataObj" list-type="picture-card"
+    <el-upload action="http://gulimall-sichuan.oss-cn-hangzhou.aliyuncs.com" :data="dataObj" :list-type="listType"
       :file-list="fileList" :before-upload="beforeUpload" :on-remove="handleRemove" :on-success="handleUploadSuccess"
-      :on-preview="handlePreview" :limit="maxCount" :on-exceed="handleExceed">
+      :on-preview="handlePreview" :limit="maxCount" :on-exceed="handleExceed" :show-file-list="showFile">
       <i class="el-icon-plus"></i>
     </el-upload>
     <el-dialog :visible.sync="dialogVisible">
@@ -22,7 +22,16 @@ export default {
     maxCount: {
       type: Number,
       default: 30
+    },
+    listType: {
+      type: String,
+      default: "picture-card"
+    },
+    showFile: {
+      type: Boolean,
+      default: true
     }
+
   },
   data() {
     return {
@@ -74,7 +83,7 @@ export default {
             _self.dataObj.policy = response.data.policy;
             _self.dataObj.signature = response.data.signature;
             _self.dataObj.ossaccessKeyId = response.data.accessid;
-            _self.dataObj.key = response.data.dir + "/" + getUUID() + "_${filename}";
+            _self.dataObj.key = response.data.dir + getUUID() + "_${filename}";
             _self.dataObj.dir = response.data.dir;
             _self.dataObj.host = response.data.host;
             resolve(true);
